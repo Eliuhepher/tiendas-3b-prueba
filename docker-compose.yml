@@ -1,0 +1,11 @@
+version: '3.9'
+
+services:
+  djangoapp:
+    container_name: Tiendas3B-API
+    build: .
+    volumes:
+      - .:/Tiendas3B
+    ports:
+      - "8000:8000"
+    
