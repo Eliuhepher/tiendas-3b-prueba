@@ -27,10 +27,13 @@ class ProductView(APIView):
         if sku:
             try:
                 product = Product.objects.get(sku=sku)
-                serializer = ProductResponseSerializer(product)
             except Product.DoesNotExist as error:
                 return Response(
-                    {"error": True, "message": error}, status=HTTP_400_BAD_REQUEST
+                    data={
+                        "message": "No existe producto para el sku especificado",
+                        "error": True,
+                    },
+                    status=HTTP_404_NOT_FOUND,
                 )
 
         else:
@@ -97,11 +100,12 @@ class OrderView(APIView):
 
                 product_to_update = Product.objects.get(sku=sku)
                 if product_to_update.stock <= 10:
-                    print(f"¡Atención! El producto {product_to_update.sku} | {product_to_update.name} está próximo a agotarse. Su stock actual es de {product_to_update.stock}")
+                    print(
+                        f"¡Atención! El producto {product_to_update.sku} | {product_to_update.name} está próximo a agotarse. Su stock actual es de {product_to_update.stock}"
+                    )
                 product_to_update.stock = product_to_update.stock - purchase
                 product_to_update.save()
 
-                
             return Response(
                 data={"message": "Compra realizada con éxito", "error": False},
                 status=HTTP_200_OK,
